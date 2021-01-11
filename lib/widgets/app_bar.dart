@@ -906,12 +906,12 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 ///  * [FlexibleSpaceBar], which is used with [flexibleSpace] when the app bar
 ///    can expand and collapse.
 ///  * <https://material.io/design/components/app-bars-top.html>
-class SliverAppBar extends StatefulWidget {
+class LSliverAppBar extends StatefulWidget {
   /// Creates a material design app bar that can be placed in a [CustomScrollView].
   ///
   /// The arguments [forceElevated], [primary], [floating], [pinned], [snap]
   /// and [automaticallyImplyLeading] must not be null.
-  const SliverAppBar({
+  const LSliverAppBar({
     Key key,
     this.leading,
     this.automaticallyImplyLeading = true,
@@ -1264,7 +1264,7 @@ class SliverAppBar extends StatefulWidget {
 
 // This class is only Stateful because it owns the TickerProvider used
 // by the floating appbar snap animation (via FloatingHeaderSnapConfiguration).
-class _SliverAppBarState extends State<SliverAppBar> with TickerProviderStateMixin {
+class _SliverAppBarState extends State<LSliverAppBar> with TickerProviderStateMixin {
   FloatingHeaderSnapConfiguration _snapConfiguration;
   OverScrollHeaderStretchConfiguration _stretchConfiguration;
   PersistentHeaderShowOnScreenConfiguration _showOnScreenConfiguration;
@@ -1303,7 +1303,7 @@ class _SliverAppBarState extends State<SliverAppBar> with TickerProviderStateMix
   }
 
   @override
-  void didUpdateWidget(SliverAppBar oldWidget) {
+  void didUpdateWidget(LSliverAppBar oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.snap != oldWidget.snap || widget.floating != oldWidget.floating)
       _updateSnapConfiguration();
@@ -1319,6 +1319,7 @@ class _SliverAppBarState extends State<SliverAppBar> with TickerProviderStateMix
     final double collapsedHeight = (widget.pinned && widget.floating && widget.bottom != null)
       ? (widget.collapsedHeight ?? 0.0) + bottomHeight + topPadding
       : (widget.collapsedHeight ?? widget.toolbarHeight) + bottomHeight + topPadding;
+
 
     return MediaQuery.removePadding(
       context: context,

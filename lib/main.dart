@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_weixin/pages/tabbar/conversation.dart';
 import 'package:flutter_weixin/tabbar_page.dart';
 
 void main() {
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         splashColor: Colors.transparent // 禁用水波纹
       ),
       title: '海配车服',
-      home: TabbarPage(),
+      home: ConversationPage(),
       supportedLocales: [
         const Locale('zh', 'CN'),
         const Locale('en', 'US'),
