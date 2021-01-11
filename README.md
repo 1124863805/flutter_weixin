@@ -1,16 +1,6 @@
 # flutter_weixin
 
-A new Flutter application.
 
-## Getting Started
+flutter 仿微信页面
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+2021/1/11: 第一次初始化项目。完成Tabbar页面，完成会话页面，UI页面图标有些粗糙，以后在完善
