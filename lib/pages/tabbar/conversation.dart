@@ -304,81 +304,100 @@ class SecondFloorWidgetState extends State<SecondFloorWidget> {
         }
         return Future.value(true);
       },
-      child: AnimatedContainer(
-        height: _isOpen
-            ? _secondFloor
-            : _refreshState == RefreshMode.inactive
-            ? 0.0
-            : _pulledExtent,
-        color: Colors.white,
-        duration: _toggleAnimation
-            ? _toggleAnimationDuration
-            : Duration(milliseconds: 1),
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              bottom: 0.0,
-              left: 0.0,
-              right: 0.0,
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                width: double.infinity,
-                child: Container(width: 100,height: 100,color: Colors.red,),
+      child: InkResponse(
+        onTap: (){
+          if (_isOpen) {
+            setState(() {
+              _isOpen = false;
+              _toggleAnimation = true;
+              Future.delayed(_toggleAnimationDuration, () {
+                if (mounted) {
+                  setState(() {
+                    _toggleAnimation = false;
+                  });
+                }
+              });
+            });
+            return Future.value(false);
+          }
+          return Future.value(true);
+        },
+        child: AnimatedContainer(
+          height: _isOpen
+              ? _secondFloor
+              : _refreshState == RefreshMode.inactive
+              ? 0.0
+              : _pulledExtent,
+          color: Colors.white,
+          duration: _toggleAnimation
+              ? _toggleAnimationDuration
+              : Duration(milliseconds: 1),
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                bottom: 0.0,
+                left: 0.0,
+                right: 0.0,
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: double.infinity,
+                  child: Container(width: 100,height: 100,color: Colors.red,),
+                ),
               ),
-            ),
-            _isOpen
-                ? AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-            )
-                : Container(),
-            Positioned(
-              bottom: 0.0,
-              left: 0.0,
-              right: 0.0,
-              child: AnimatedCrossFade(
-                firstChild: Center(
-                  child: Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.only(
-                      bottom: 20.0,
-                      top: 10.0,
-                    ),
-                    width: 24.0,
-                    height: 24.0,
-                    child: Offstage(
-                      offstage: widget.secondFloorOpen.value,
-                      child: CircularProgressIndicator(
-                        value: _indicatorValue,
-                        valueColor: AlwaysStoppedAnimation(Colors.white),
-                        strokeWidth: 2.4,
+              _isOpen
+                  ? AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0.0,
+              )
+                  : Container(),
+              Positioned(
+                bottom: 0.0,
+                left: 0.0,
+                right: 0.0,
+                child: AnimatedCrossFade(
+                  firstChild: Center(
+                    child: Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(
+                        bottom: 20.0,
+                        top: 10.0,
+                      ),
+                      width: 24.0,
+                      height: 24.0,
+                      child: Offstage(
+                        offstage: widget.secondFloorOpen.value,
+                        child: CircularProgressIndicator(
+                          value: _indicatorValue,
+                          valueColor: AlwaysStoppedAnimation(Colors.white),
+                          strokeWidth: 2.4,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                secondChild: Center(
-                  child: Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.only(
-                      bottom: 20.0,
-                      top: 10.0,
-                    ),
-                    child: Offstage(
-                      offstage: !widget.secondFloorOpen.value,
-                      child: Text(
-                        "213",
-                        style: TextStyle(fontSize: 18.0, color: Colors.white),
+                  secondChild: Center(
+                    child: Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(
+                        bottom: 20.0,
+                        top: 10.0,
+                      ),
+                      child: Offstage(
+                        offstage: !widget.secondFloorOpen.value,
+                        child: Text(
+                          "213",
+                          style: TextStyle(fontSize: 18.0, color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
+                  crossFadeState: widget.secondFloorOpen.value
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+                  duration: Duration(milliseconds: 300),
                 ),
-                crossFadeState: widget.secondFloorOpen.value
-                    ? CrossFadeState.showSecond
-                    : CrossFadeState.showFirst,
-                duration: Duration(milliseconds: 300),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
