@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         splashColor: Colors.transparent // 禁用水波纹
       ),
       title: '海配车服',
-      home: ConversationPage(),
+      home: TabbarPage(),
       supportedLocales: [
         const Locale('zh', 'CN'),
         const Locale('en', 'US'),

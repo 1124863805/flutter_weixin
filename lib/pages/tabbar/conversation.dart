@@ -1,6 +1,8 @@
 // 会话页面
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:flutter_weixin/evnetbus/TarbbarDisplayEvent.dart';
+import 'package:flutter_weixin/util/EventBusUtils.dart';
 import 'package:flutter_weixin/widgets/app_bar.dart';
 
 class ConversationPage extends StatefulWidget {
@@ -13,6 +15,7 @@ class _ConversationPageState extends State<ConversationPage> {
   int _count = 20;
   LinkHeaderNotifier _linkNotifier;
   ValueNotifier<bool> _secondFloorOpen;
+
 
   @override
   void initState() {
@@ -53,15 +56,15 @@ class _ConversationPageState extends State<ConversationPage> {
                   }
                 });
               },
-              onLoad: () async {
-                await Future.delayed(Duration(seconds: 2), () {
-                  if (mounted) {
-                    setState(() {
-                      _count += 20;
-                    });
-                  }
-                });
-              },
+              // onLoad: () async {
+              //   await Future.delayed(Duration(seconds: 2), () {
+              //     if (mounted) {
+              //       setState(() {
+              //         _count += 20;
+              //       });
+              //     }
+              //   });
+              // },
               slivers: <Widget>[
 
                 SliverAppBar(
@@ -129,7 +132,7 @@ class _ConversationPageState extends State<ConversationPage> {
                                                   Expanded(
                                                     flex: 19,
                                                     child: Container(
-                                                      child: new Text("孙连理",style: TextStyle(fontSize: 17,),overflow: TextOverflow.ellipsis,),
+                                                      child: new Text("奥特曼",style: TextStyle(fontSize: 17,),overflow: TextOverflow.ellipsis,),
                                                     ),
                                                   ),
                                                   Expanded(
@@ -244,6 +247,7 @@ class SecondFloorWidgetState extends State<SecondFloorWidget> {
         // 判断是否到展开二楼
         if (widget.secondFloorOpen.value && !_toggleAnimation) {
           _isOpen = true;
+          eventBus.emit(TabbarDisplayEvent(true));
           _secondFloor = MediaQuery.of(context).size.height;
           _toggleAnimation = true;
           Future.delayed(_toggleAnimationDuration, () {
@@ -291,6 +295,7 @@ class SecondFloorWidgetState extends State<SecondFloorWidget> {
         if (_isOpen) {
           setState(() {
             _isOpen = false;
+            eventBus.emit(TabbarDisplayEvent(false));
             _toggleAnimation = true;
             Future.delayed(_toggleAnimationDuration, () {
               if (mounted) {
@@ -309,6 +314,7 @@ class SecondFloorWidgetState extends State<SecondFloorWidget> {
           if (_isOpen) {
             setState(() {
               _isOpen = false;
+              eventBus.emit(TabbarDisplayEvent(false));
               _toggleAnimation = true;
               Future.delayed(_toggleAnimationDuration, () {
                 if (mounted) {
@@ -341,7 +347,7 @@ class SecondFloorWidgetState extends State<SecondFloorWidget> {
                 child: Container(
                   height: MediaQuery.of(context).size.height,
                   width: double.infinity,
-                  child: Container(width: 100,height: 100,color: Colors.red,),
+                  color: Color(0xffebebeb),
                 ),
               ),
               _isOpen

@@ -1,4 +1,4 @@
-
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -6,7 +6,10 @@ import 'package:flutter_weixin/pages/tabbar/contact.dart';
 import 'package:flutter_weixin/pages/tabbar/conversation.dart';
 import 'package:flutter_weixin/pages/tabbar/find.dart';
 import 'package:flutter_weixin/pages/tabbar/mine.dart';
+import 'package:flutter_weixin/util/EventBusUtils.dart';
 import 'package:flutter_weixin/widgets/common_widgets.dart';
+
+import 'evnetbus/TarbbarDisplayEvent.dart';
 
 class TabbarPage extends StatefulWidget  {
 
@@ -20,16 +23,25 @@ class TabbarPageState extends State<TabbarPage> with WidgetsBindingObserver {
   void changeCurrentPageWithIndex(int index) {
     setState(() => _currentIndex = index);
   }
+  bool tabbarDisplay = false;
 
+  var tabbarDisplayEvent;
 
 @override
   void initState() {
     super.initState();
+    tabbarDisplayEvent = eventBus.on<TabbarDisplayEvent>((event) {
+      print('page A received msg');
+      setState(() {
+        tabbarDisplay = event.display;
+      });
+    });
 
   }
 
   @override
   void dispose() {
+    eventBus.off(tabbarDisplayEvent);
     super.dispose();
   }
 
@@ -46,7 +58,11 @@ class TabbarPageState extends State<TabbarPage> with WidgetsBindingObserver {
           MinePage(), // 我的页面
         ],
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(context),
+      bottomNavigationBar: Offstage(
+          offstage: tabbarDisplay,
+          child: _buildBottomNavigationBar(context)
+      )
+
     );
   }
 
