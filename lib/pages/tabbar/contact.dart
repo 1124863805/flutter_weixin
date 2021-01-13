@@ -1,3 +1,4 @@
+import 'package:adobe_xd/pinned.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_weixin/widgets/common_widgets.dart';
 
@@ -16,6 +17,13 @@ class _ContactPageState extends State<ContactPage> {
           Icon(Icons.person_add)
         ],
         title: new Text("通讯录"),
+      ),
+      body: Column(
+        children: [
+
+
+
+        ],
       ),
     );
   }

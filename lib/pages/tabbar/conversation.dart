@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_weixin/evnetbus/TarbbarDisplayEvent.dart';
+import 'package:flutter_weixin/pages/message/message_content.dart';
 import 'package:flutter_weixin/util/EventBusUtils.dart';
 import 'package:flutter_weixin/widgets/app_bar.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -107,56 +108,61 @@ class _ConversationPageState extends State<ConversationPage> {
                     ),
 
                      for(int i = 0; i< 100; i++)
-                              Container(
-                                margin: EdgeInsets.only(top: 10,left: 10),
-                                width: MediaQuery.of(context).size.width,
-                                height: 75,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: 55,
-                                      height: 55,
-                                      child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(10),
-                                          child: Image.network("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fwx1.sinaimg.cn%2Fmw690%2F5301ff11ly1gb58jwjhikj20p00p0q4l.jpg&refer=http%3A%2F%2Fwx1.sinaimg.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1612966577&t=bc25f2f0258280b4f76a38d123cbe24e",fit: BoxFit.fill)
+                              InkResponse(
+                                onTap: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MessageContentPage()));
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 10,left: 10),
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 75,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: 55,
+                                        height: 55,
+                                        child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(10),
+                                            child: Image.network("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fwx1.sinaimg.cn%2Fmw690%2F5301ff11ly1gb58jwjhikj20p00p0q4l.jpg&refer=http%3A%2F%2Fwx1.sinaimg.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1612966577&t=bc25f2f0258280b4f76a38d123cbe24e",fit: BoxFit.fill)
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Expanded(
-                                        child: Container(
-                                          margin: EdgeInsets.only(right: 10),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Expanded(
-                                                    flex: 19,
-                                                    child: Container(
-                                                      child: new Text("奥特曼",style: TextStyle(fontSize: 17,),overflow: TextOverflow.ellipsis,),
+                                      SizedBox(width: 10),
+                                      Expanded(
+                                          child: Container(
+                                            margin: EdgeInsets.only(right: 10),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 19,
+                                                      child: Container(
+                                                        child: new Text("奥特曼",style: TextStyle(fontSize: 17,),overflow: TextOverflow.ellipsis,),
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Expanded(
-                                                      flex:6,
-                                                      child:   Container(
-                                                          margin: EdgeInsets.only(top: 4),
-                                                          alignment: Alignment.centerRight,
-                                                          child: new Text("上午9:20",style: TextStyle(color: Color(0xffb4b4b4),fontSize: 13),)
-                                                      )
-                                                  )
-                                                ],
-                                              ),
-                                              new Text("I love you ",style: TextStyle(fontSize: 14,color: Color(0xffb7b7b7)),overflow: TextOverflow.ellipsis),
-                                              // SizedBox(height: 5,),
-                                              Divider()
-                                            ],
-                                          ),
-                                        )
-                                    )
-                                  ],
+                                                    Expanded(
+                                                        flex:6,
+                                                        child:   Container(
+                                                            margin: EdgeInsets.only(top: 4),
+                                                            alignment: Alignment.centerRight,
+                                                            child: new Text("上午9:20",style: TextStyle(color: Color(0xffb4b4b4),fontSize: 13),)
+                                                        )
+                                                    )
+                                                  ],
+                                                ),
+                                                new Text("I love you ",style: TextStyle(fontSize: 14,color: Color(0xffb7b7b7)),overflow: TextOverflow.ellipsis),
+                                                // SizedBox(height: 5,),
+                                                Divider()
+                                              ],
+                                            ),
+                                          )
+                                      )
+                                    ],
+                                  ),
                                 ),
                               )
                   ]),
@@ -221,7 +227,7 @@ class SecondFloorWidget extends StatefulWidget {
 
 class SecondFloorWidgetState extends State<SecondFloorWidget> {
   // 触发二楼高度
-  final double _openSecondFloorExtent = 170.0;
+  final double _openSecondFloorExtent = 100.0;
   // 指示器值
   double _indicatorValue = 0.0;
 
@@ -307,7 +313,7 @@ class SecondFloorWidgetState extends State<SecondFloorWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print("---- $_pulledExtent");
+    // print("---- $_pulledExtent");
     return WillPopScope(
       onWillPop: () {
         if (_isOpen) {
