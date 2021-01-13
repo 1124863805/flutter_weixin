@@ -31,7 +31,7 @@ class TabbarPageState extends State<TabbarPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     tabbarDisplayEvent = eventBus.on<TabbarDisplayEvent>((event) {
-      print('page A received msg');
+      // print('page A received msg');
       setState(() {
         tabbarDisplay = event.display;
       });

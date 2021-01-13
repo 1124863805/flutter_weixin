@@ -4,6 +4,7 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_weixin/evnetbus/TarbbarDisplayEvent.dart';
 import 'package:flutter_weixin/util/EventBusUtils.dart';
 import 'package:flutter_weixin/widgets/app_bar.dart';
+import 'package:simple_animations/simple_animations.dart';
 
 class ConversationPage extends StatefulWidget {
   @override
@@ -16,6 +17,7 @@ class _ConversationPageState extends State<ConversationPage> {
   LinkHeaderNotifier _linkNotifier;
   ValueNotifier<bool> _secondFloorOpen;
 
+  ScrollController _controller = new ScrollController();
 
   @override
   void initState() {
@@ -29,17 +31,20 @@ class _ConversationPageState extends State<ConversationPage> {
     super.dispose();
     _linkNotifier.dispose();
     _secondFloorOpen.dispose();
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       // backgroundColor: Color(0xffebebeb),
       body: Column(
         children: [
           SecondFloorWidget(_linkNotifier, _secondFloorOpen),
           Expanded(
             child: EasyRefresh.custom(
+              scrollController: _controller,
               header: LinkHeader(
                 _linkNotifier,
                 extent: 70.0,
@@ -47,14 +52,14 @@ class _ConversationPageState extends State<ConversationPage> {
                 completeDuration: Duration(milliseconds: 500),
               ),
               onRefresh: () async {
-                if (_secondFloorOpen.value) return;
-                await Future.delayed(Duration(seconds: 2), () {
-                  if (mounted) {
-                    setState(() {
-                      _count = 20;
-                    });
-                  }
-                });
+                // if (_secondFloorOpen.value) return;
+                // await Future.delayed(Duration(seconds: 2), () {
+                //   if (mounted) {
+                //     setState(() {
+                //       _count = 20;
+                //     });
+                //   }
+                // });
               },
               // onLoad: () async {
               //   await Future.delayed(Duration(seconds: 2), () {
@@ -66,7 +71,6 @@ class _ConversationPageState extends State<ConversationPage> {
               //   });
               // },
               slivers: <Widget>[
-
                 SliverAppBar(
                   elevation: 0,
                   toolbarHeight: 40,
@@ -102,7 +106,7 @@ class _ConversationPageState extends State<ConversationPage> {
                       ),
                     ),
 
-
+                     for(int i = 0; i< 100; i++)
                               Container(
                                 margin: EdgeInsets.only(top: 10,left: 10),
                                 width: MediaQuery.of(context).size.width,
@@ -209,7 +213,6 @@ class SecondFloorWidget extends StatefulWidget {
 
   const SecondFloorWidget(this.linkNotifier, this.secondFloorOpen, {Key key})
       : super(key: key);
-
   @override
   SecondFloorWidgetState createState() {
     return SecondFloorWidgetState();
@@ -218,7 +221,7 @@ class SecondFloorWidget extends StatefulWidget {
 
 class SecondFloorWidgetState extends State<SecondFloorWidget> {
   // 触发二楼高度
-  final double _openSecondFloorExtent = 100.0;
+  final double _openSecondFloorExtent = 170.0;
   // 指示器值
   double _indicatorValue = 0.0;
 
@@ -237,17 +240,18 @@ class SecondFloorWidgetState extends State<SecondFloorWidget> {
   void initState() {
     super.initState();
     widget.linkNotifier.addListener(onLinkNotify);
+
   }
 
   void onLinkNotify() {
+    // print(widget.linkNotifier.pulledExtent);
     setState(() {
-      if (_refreshState == RefreshMode.armed ||
-          _refreshState == RefreshMode.refresh) {
+      if (_refreshState == RefreshMode.armed || _refreshState == RefreshMode.refresh) {
         _indicatorValue = null;
         // 判断是否到展开二楼
         if (widget.secondFloorOpen.value && !_toggleAnimation) {
-          _isOpen = true;
           eventBus.emit(TabbarDisplayEvent(true));
+          _isOpen = true;
           _secondFloor = MediaQuery.of(context).size.height;
           _toggleAnimation = true;
           Future.delayed(_toggleAnimationDuration, () {
@@ -257,11 +261,23 @@ class SecondFloorWidgetState extends State<SecondFloorWidget> {
               });
             }
           });
+        }else{
+
         }
-      } else if (_refreshState == RefreshMode.refreshed ||
-          _refreshState == RefreshMode.done) {
-        _indicatorValue = 1.0;
-      } else {
+      }
+      else if (_refreshState == RefreshMode.refreshed || _refreshState == RefreshMode.done) {
+        // _indicatorValue = 0.0;
+        _indicatorValue = 0.0;
+        _toggleAnimation = true;
+        Future.delayed(_toggleAnimationDuration, () {
+          if (mounted) {
+            setState(() {
+              _toggleAnimation = false;
+            });
+          }
+        });
+      }
+      else {
         if (_refreshState == RefreshMode.inactive) {
           _indicatorValue = 0.0;
           _toggleAnimation = true;
@@ -275,6 +291,7 @@ class SecondFloorWidgetState extends State<SecondFloorWidget> {
         } else {
           double indicatorValue = _pulledExtent / 70.0 * 0.8;
           _indicatorValue = indicatorValue < 0.8 ? indicatorValue : 0.8;
+          // print(indicatorValue);
           // 判断是否到达打开二楼高度
           if (_refreshState == RefreshMode.drag) {
             if (_pulledExtent >= _openSecondFloorExtent) {
@@ -290,12 +307,13 @@ class SecondFloorWidgetState extends State<SecondFloorWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print("---- $_pulledExtent");
     return WillPopScope(
       onWillPop: () {
         if (_isOpen) {
+          eventBus.emit(TabbarDisplayEvent(false));
           setState(() {
             _isOpen = false;
-            eventBus.emit(TabbarDisplayEvent(false));
             _toggleAnimation = true;
             Future.delayed(_toggleAnimationDuration, () {
               if (mounted) {
@@ -314,10 +332,10 @@ class SecondFloorWidgetState extends State<SecondFloorWidget> {
           if (_isOpen) {
             setState(() {
               _isOpen = false;
-              eventBus.emit(TabbarDisplayEvent(false));
               _toggleAnimation = true;
               Future.delayed(_toggleAnimationDuration, () {
                 if (mounted) {
+                  eventBus.emit(TabbarDisplayEvent(false));
                   setState(() {
                     _toggleAnimation = false;
                   });
@@ -329,77 +347,200 @@ class SecondFloorWidgetState extends State<SecondFloorWidget> {
           return Future.value(true);
         },
         child: AnimatedContainer(
+          padding: EdgeInsets.zero,
           height: _isOpen
               ? _secondFloor
               : _refreshState == RefreshMode.inactive
               ? 0.0
               : _pulledExtent,
-          color: Colors.white,
+          color: Color(0xffebebeb),
           duration: _toggleAnimation
               ? _toggleAnimationDuration
               : Duration(milliseconds: 1),
           child: Stack(
             children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height,
+                width: double.infinity,
+                child: Plasma(
+                  particles: 3,
+                  foregroundColor: Color(0x4de9e9df),
+                  backgroundColor: Color(0xff5c5772),
+                  size: 0.54,
+                  speed: 2.66,
+                  offset: 2.84,
+                  blendMode: BlendMode.colorDodge,
+                  // child: Container(), // your UI here
+                ),
+              ),
+
+              Offstage(
+                offstage: !_isOpen,
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: double.infinity,
+                  child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    appBar: AppBar(
+                      backgroundColor: Colors.transparent,
+                      title: new Text("小程序",style: TextStyle(color: Colors.white),),
+                    ),
+                    bottomNavigationBar: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      height: 80,
+                      width: MediaQuery.of(context).size.width,
+                      color: Color(0xffebebeb).withOpacity(0.3),
+                      child: Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(),
+                            new Text("微信(599)",style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),),
+                            Icon(Icons.add_circle_outline_sharp)
+
+                          ],
+                        ),
+                      ),
+                    ),
+                    body: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 30),
+                      child: ListView(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              new Text("最近使用",style: TextStyle(color: Colors.white.withOpacity(0.6)),),
+                              SizedBox(height: 20),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Icon(Icons.ac_unit_sharp,size: 55,),
+                                      SizedBox(height: 10),
+                                      new Text("最近使用",style: TextStyle(color: Colors.white),),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Icon(Icons.ac_unit_sharp,size: 55,),
+                                      SizedBox(height: 10),
+                                      new Text("最近使用",style: TextStyle(color: Colors.white),),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Icon(Icons.ac_unit_sharp,size: 55,),
+                                      SizedBox(height: 10),
+                                      new Text("最近使用",style: TextStyle(color: Colors.white),),
+                                    ],
+                                  ),
+                                  ClipOval(
+                                    child: Container(
+                                      height: 55,
+                                      width: 55,
+                                      color: Colors.white,
+                                      alignment: Alignment.center,
+                                      child: Icon(Icons.more_horiz,color: Color(0xffb2b2b2),size: 30,),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 40),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              new Text("我的小程序",style: TextStyle(color: Colors.white.withOpacity(0.6)),),
+                              SizedBox(height: 20),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Icon(Icons.ac_unit_sharp,size: 55,),
+                                      SizedBox(height: 10),
+                                      new Text("最近使用",style: TextStyle(color: Colors.white),),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Icon(Icons.ac_unit_sharp,size: 55,),
+                                      SizedBox(height: 10),
+                                      new Text("最近使用",style: TextStyle(color: Colors.white),),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Icon(Icons.ac_unit_sharp,size: 55,),
+                                      SizedBox(height: 10),
+                                      new Text("最近使用",style: TextStyle(color: Colors.white),),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Icon(Icons.ac_unit_sharp,size: 55,),
+                                      SizedBox(height: 10),
+                                      new Text("最近使用",style: TextStyle(color: Colors.white),),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               Positioned(
                 bottom: 0.0,
                 left: 0.0,
                 right: 0.0,
                 child: Container(
+                  alignment: Alignment.bottomCenter,
                   height: MediaQuery.of(context).size.height,
                   width: double.infinity,
-                  color: Color(0xffebebeb),
-                ),
-              ),
-              _isOpen
-                  ? AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0.0,
-              )
-                  : Container(),
-              Positioned(
-                bottom: 0.0,
-                left: 0.0,
-                right: 0.0,
-                child: AnimatedCrossFade(
-                  firstChild: Center(
-                    child: Container(
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.only(
-                        bottom: 20.0,
-                        top: 10.0,
-                      ),
-                      width: 24.0,
-                      height: 24.0,
-                      child: Offstage(
-                        offstage: widget.secondFloorOpen.value,
-                        child: CircularProgressIndicator(
-                          value: _indicatorValue,
-                          valueColor: AlwaysStoppedAnimation(Colors.white),
-                          strokeWidth: 2.4,
-                        ),
-                      ),
+                  color: Color(0xffebebeb).withOpacity(widget.secondFloorOpen.value ? 0 : 1),
+                  child: Container(
+                    child: Offstage(
+                      offstage: widget.secondFloorOpen.value,
+                      child: Icon(Icons.more_horiz),
                     ),
                   ),
-                  secondChild: Center(
-                    child: Container(
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.only(
-                        bottom: 20.0,
-                        top: 10.0,
-                      ),
-                      child: Offstage(
-                        offstage: !widget.secondFloorOpen.value,
-                        child: Text(
-                          "213",
-                          style: TextStyle(fontSize: 18.0, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  crossFadeState: widget.secondFloorOpen.value
-                      ? CrossFadeState.showSecond
-                      : CrossFadeState.showFirst,
-                  duration: Duration(milliseconds: 300),
+                  // child: AnimatedCrossFade(
+                  //   firstChild: Container(
+                  //     alignment: Alignment.center,
+                  //     margin: EdgeInsets.only(
+                  //       bottom: 20.0,
+                  //       top: 10.0,
+                  //     ),
+                  //     width: 24.0,
+                  //     height: 24.0,
+                  //     child: Offstage(
+                  //       offstage: widget.secondFloorOpen.value,
+                  //       child: Icon(Icons.more_horiz),
+                  //     ),
+                  //   ),
+                  //   secondChild: Offstage(
+                  //     offstage: !widget.secondFloorOpen.value,
+                  //     child: CircularProgressIndicator(
+                  //       value: _indicatorValue,
+                  //       valueColor: AlwaysStoppedAnimation(Colors.white),
+                  //       strokeWidth: 2.4,
+                  //     ),
+                  //   ),
+                  //   crossFadeState: widget.secondFloorOpen.value
+                  //       ? CrossFadeState.showSecond
+                  //       : CrossFadeState.showFirst,
+                  //   duration: Duration(milliseconds: 300),
+                  // ),
                 ),
               ),
             ],
