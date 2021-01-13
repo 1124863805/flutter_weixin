@@ -37,11 +37,11 @@ class Bubble extends StatelessWidget {
         alignment: this.alignment,
         width: this.width,
         height: this.height,
-        constraints: (this.constraints??BoxConstraints()).copyWith(minHeight: _MinHeight,minWidth: _MinWidth),
+        constraints: (this.constraints??BoxConstraints()).copyWith(minHeight: _MinHeight,minWidth: _MinWidth,),
         margin: this.margin,
         decoration: this.decoration,
         color: this.color,
-        padding: EdgeInsets.fromLTRB(this._left, 0.0, this._right, 0.0).add(this.padding??EdgeInsets.fromLTRB(7.0, 5.0, 7.0, 5.0)),
+        padding: EdgeInsets.fromLTRB(this._left, 0.0, this._right, 0.0).add(this.padding??EdgeInsets.fromLTRB(17.0, 5.0, 17.0, 5.0)),
         child: this.child,
       ),
     );
