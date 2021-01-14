@@ -1,5 +1,9 @@
 # flutter_weixin
 
+![image](http://cardata-gudain.oss-cn-beijing.aliyuncs.com/5fffad4474e48_5fffad44bef27.gif)
+说明：
+http://cardata-gudain.oss-cn-beijing.aliyuncs.com/5fffad4474e48_5fffad44bef27.gif
+
 
 flutter 仿微信页面
 
