@@ -115,10 +115,15 @@ class _MessageContentPageState extends State<MessageContentPage>
         ),
         actions: [Icon(Icons.more_horiz)],
       ),
-      body: KeyboardDismiss(
-        child: Column(
-          children: [
-            Flexible(
+      body: Column(
+        children: [
+          Flexible(
+            child: KeyboardDismiss(
+              onDismiss: (){
+                setState(() {
+                  showExpression = false;
+                });
+              },
               child: Container(
                 color: Color(0xffededed),
                 child: AnimatedList(
@@ -278,207 +283,209 @@ class _MessageContentPageState extends State<MessageContentPage>
                 ),
               ),
             ),
-            new Divider(height: 1.0),
-            SafeArea(
-              child: Column(
-                children: [
-                  new Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: new BoxDecoration(color: Color(0xFFF6F6F6)),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.volume_up,
-                          size: 30,
+          ),
+          new Divider(height: 1.0),
+          SafeArea(
+            child: Column(
+              children: [
+                new Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  decoration: new BoxDecoration(color: Color(0xFFF6F6F6)),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.volume_up,
+                        size: 30,
+                      ),
+                      SizedBox(width: 10),
+                      Flexible(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          height: 37,
+                          margin: EdgeInsets.only(top: 10, bottom: 10),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(7)),
+                          child: TextField(
+                            focusNode: _focusNode,
+                            cursorColor: Color(0xff00c15e),
+                            onTap: () {
+                              jumpTo();
+                            },
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              isDense: true,
+                            ),
+                            onSubmitted: (value) {
+                              List<String> str = maps["上午8:29"];
+                              str.add(value);
+                              setState(() {
+                                maps["上午8:29"] = str;
+                              });
+                              _focusNode.requestFocus();
+                              jumpTo();
+                            },
+                          ),
                         ),
-                        SizedBox(width: 10),
-                        Flexible(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            height: 37,
-                            margin: EdgeInsets.only(top: 10, bottom: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(7)),
-                            child: TextField(
-                              focusNode: _focusNode,
-                              cursorColor: Color(0xff00c15e),
+                      ),
+                      SizedBox(width: 10),
+                      Row(
+                        children: [
+                          InkResponse(
                               onTap: () {
-                                jumpTo();
-                              },
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                isDense: true,
-                              ),
-                              onSubmitted: (value) {
-                                List<String> str = maps["上午8:29"];
-                                str.add(value);
+                                _focusNode.unfocus();
                                 setState(() {
-                                  maps["上午8:29"] = str;
+                                  showExpression = !showExpression;
                                 });
                               },
-                            ),
+                              child:
+                                  Icon(Icons.emoji_emotions_outlined, size: 30)),
+                          SizedBox(width: 10),
+                          Icon(Icons.add_circle_outline_sharp, size: 30)
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+
+                Offstage(
+                  offstage: !showExpression,
+                  child: Container(
+                    height: 350,
+                    child: Column(
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          height: 50,
+                          child: Row(
+                            children: [
+                              Container(
+                                  margin: EdgeInsets.only(left: 20,right: 10),
+                                  child: Icon(Icons.search_sharp)
+                              ),
+                              TabBar(
+                                isScrollable:true,
+                                controller: _tabController,
+                                indicator: CircleTabIndicator(color: Colors.white, radius: 10),
+                                tabs: [
+                                  Icon(Icons.emoji_emotions_outlined,color: Colors.black,),
+                                  Icon(Icons.add_circle_outline,color: Colors.black)
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(width: 10),
-                        Row(
-                          children: [
-                            InkResponse(
-                                onTap: () {
-                                  _focusNode.unfocus();
-                                  setState(() {
-                                    showExpression = !showExpression;
-                                  });
-                                },
-                                child:
-                                    Icon(Icons.emoji_emotions_outlined, size: 30)),
-                            SizedBox(width: 10),
-                            Icon(Icons.add_circle_outline_sharp, size: 30)
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-
-                  Offstage(
-                    offstage: !showExpression,
-                    child: Container(
-                      height: 350,
-                      child: Column(
-                        children: [
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            height: 50,
-                            child: Row(
-                              children: [
-                                Container(
-                                    margin: EdgeInsets.only(left: 20,right: 10),
-                                    child: Icon(Icons.search_sharp)
-                                ),
-                                TabBar(
-                                  isScrollable:true,
-                                  controller: _tabController,
-                                  indicator: CircleTabIndicator(color: Colors.white, radius: 10),
-                                  tabs: [
-                                    Icon(Icons.emoji_emotions_outlined,color: Colors.black,),
-                                    Icon(Icons.add_circle_outline,color: Colors.black)
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                              child: TabBarView(
-                                controller: _tabController,
-                                children: <Widget>[
-                                  Stack(
-                                    children: [
-                                      ListView(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(left: 20),
-                                              child: new Text("最近使用")
-                                          ),
-                                          SizedBox(height: 10),
-                                          Container(
-                                            margin: EdgeInsets.symmetric(horizontal: 20),
-                                            child: GridView.builder(
-                                                shrinkWrap: true,
-                                                physics: NeverScrollableScrollPhysics(),
-                                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisCount: 8,
-                                                    childAspectRatio: 0.6,
-                                                    crossAxisSpacing: 20
-                                                ),
-                                                itemCount: 8,
-                                                itemBuilder: (BuildContext context,int index){
-                                                  return new Text("${allEmojis[index]}",style: TextStyle(fontSize: 27),);
-                                                }
-                                            ),
-                                          ),
-                                          Container(
-                                              margin: EdgeInsets.only(left: 20),
-                                              child: new Text("所有表情")
-                                          ),
-                                          SizedBox(height: 10),
-                                          Container(
-                                            margin: EdgeInsets.symmetric(horizontal: 20),
-                                            child: GridView.builder(
-                                                shrinkWrap: true,
-                                                physics: NeverScrollableScrollPhysics(),
-                                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        Expanded(
+                            child: TabBarView(
+                              controller: _tabController,
+                              children: <Widget>[
+                                Stack(
+                                  children: [
+                                    ListView(
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.only(left: 20),
+                                            child: new Text("最近使用")
+                                        ),
+                                        SizedBox(height: 10),
+                                        Container(
+                                          margin: EdgeInsets.symmetric(horizontal: 20),
+                                          child: GridView.builder(
+                                              shrinkWrap: true,
+                                              physics: NeverScrollableScrollPhysics(),
+                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                                   crossAxisCount: 8,
                                                   childAspectRatio: 0.6,
                                                   crossAxisSpacing: 20
-                                                ),
-                                              itemCount: allEmojis.length,
-                                                itemBuilder: (BuildContext context,int index){
-                                                  return new Text("${allEmojis[index]}",style: TextStyle(fontSize: 27),);
-                                                }
-                                             ),
-                                          ),
-                                        ],
-                                      ),
-
-                                      Positioned(
-                                        bottom: 0,
-                                        right: 0,
-                                        child: Container(
-                                          width: 160,
-                                          height: 80,
-                                          child: Column(
-                                            children: [
-                                              Container(width: 160,height: 20,color: Color(0xFFF6F6F6).withOpacity(0.9)),
-                                              Container(
-                                              color: Color(0xFFF6F6F6),
-                                                child: Row(
-                                                  children: [
-                                                    Container(
-                                                      width: 65,
-                                                      height: 50,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius: BorderRadius.circular(10)
-                                                      ),
-                                                      child: Icon(Icons.backspace_outlined),
-                                                    ),
-                                                    SizedBox(width: 10,),
-                                                    Container(
-                                                      alignment: Alignment.center,
-                                                      width: 65,
-                                                      height: 50,
-                                                      decoration: BoxDecoration(
-                                                          color: Color(0xff04c160),
-                                                          borderRadius: BorderRadius.circular(10)
-                                                      ),
-                                                      child: new Text("发送",style: TextStyle(color: Colors.white,fontSize: 20)),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),Expanded(child: Container(
-                                                color: Color(0xFFF6F6F6),
-                                              ))
-                                            ],
+                                              ),
+                                              itemCount: allEmojis.length > 0 ? 8 :0,
+                                              itemBuilder: (BuildContext context,int index){
+                                                return new Text("${allEmojis[index]}",style: TextStyle(fontSize: 27),);
+                                              }
                                           ),
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                  Center(
-                                    child: Icon(Icons.directions_transit),
-                                  )
-                                ],
-                              )),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
+                                        Container(
+                                            margin: EdgeInsets.only(left: 20),
+                                            child: new Text("所有表情")
+                                        ),
+                                        SizedBox(height: 10),
+                                        Container(
+                                          margin: EdgeInsets.symmetric(horizontal: 20),
+                                          child: GridView.builder(
+                                              shrinkWrap: true,
+                                              physics: NeverScrollableScrollPhysics(),
+                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 8,
+                                                childAspectRatio: 0.6,
+                                                crossAxisSpacing: 20
+                                              ),
+                                            itemCount: allEmojis.length,
+                                              itemBuilder: (BuildContext context,int index){
+                                                return new Text("${allEmojis[index]}",style: TextStyle(fontSize: 27),);
+                                              }
+                                           ),
+                                        ),
+                                      ],
+                                    ),
 
-          ],
-        ),
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      child: Container(
+                                        width: 160,
+                                        height: 80,
+                                        child: Column(
+                                          children: [
+                                            Container(width: 160,height: 20,color: Color(0xFFF6F6F6).withOpacity(0.9)),
+                                            Container(
+                                            color: Color(0xFFF6F6F6),
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    width: 65,
+                                                    height: 50,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius.circular(10)
+                                                    ),
+                                                    child: Icon(Icons.backspace_outlined),
+                                                  ),
+                                                  SizedBox(width: 10,),
+                                                  Container(
+                                                    alignment: Alignment.center,
+                                                    width: 65,
+                                                    height: 50,
+                                                    decoration: BoxDecoration(
+                                                        color: Color(0xff04c160),
+                                                        borderRadius: BorderRadius.circular(10)
+                                                    ),
+                                                    child: new Text("发送",style: TextStyle(color: Colors.white,fontSize: 18)),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),Expanded(child: Container(
+                                              color: Color(0xFFF6F6F6),
+                                            ))
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Center(
+                                  child: Icon(Icons.directions_transit),
+                                )
+                              ],
+                            )),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+
+        ],
       ),
     );
 
@@ -519,8 +526,7 @@ class _MessageContentPageState extends State<MessageContentPage>
       Future.delayed(Duration(milliseconds: 100), () {
         print("----${MediaQuery.of(context).viewInsets.bottom}");
         _myController.animateTo(
-            _myController.position.maxScrollExtent +
-                MediaQuery.of(context).viewInsets.bottom,
+            _myController.position.maxScrollExtent,
             duration: Duration(
               milliseconds: 10,
             ),

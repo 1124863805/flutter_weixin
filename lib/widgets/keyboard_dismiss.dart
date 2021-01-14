@@ -51,6 +51,7 @@ class KeyboardDismiss extends StatelessWidget {
             return;
           }
           FocusScope.of(context).requestFocus(FocusNode());
+          if (onDismiss != null) onDismiss();
         },
         child: child,
       );
