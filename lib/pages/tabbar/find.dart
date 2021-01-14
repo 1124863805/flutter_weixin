@@ -1,3 +1,4 @@
+import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_weixin/widgets/common_widgets.dart';
 
@@ -17,6 +18,20 @@ class _FindPageState extends State<FindPage> {
           Icon(Icons.person_add)
         ],
         title: new Text("发现"),
+      ),
+      body: Column(
+        children: [
+          EmojiPicker(
+            rows: 3,
+            columns: 7,
+            buttonMode: ButtonMode.MATERIAL,
+            recommendKeywords: ["racing", "horse"],
+            numRecommended: 12,
+            onEmojiSelected: (emoji, category) {
+              print(emoji);
+            },
+          )
+        ],
       ),
     );
   }
