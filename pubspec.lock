@@ -22,6 +22,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.0-nullsafety.1"
+  buttons_tabbar:
+    dependency: "direct main"
+    description:
+      name: buttons_tabbar
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.1"
   characters:
     dependency: transitive
     description:
