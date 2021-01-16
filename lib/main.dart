@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_weixin/pages/tabbar/conversation.dart';
 import 'package:flutter_weixin/tabbar_page.dart';
 
@@ -29,6 +30,9 @@ class MyApp extends StatelessWidget {
       ),
       title: '海配车服',
       home: TabbarPage(),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+      ],
       supportedLocales: [
         const Locale('zh', 'CN'),
         const Locale('en', 'US'),

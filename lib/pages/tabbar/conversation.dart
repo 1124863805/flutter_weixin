@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_weixin/evnetbus/TarbbarDisplayEvent.dart';
 import 'package:flutter_weixin/pages/message/message_content.dart';
+import 'package:flutter_weixin/pages/message/message_content_test.dart';
 import 'package:flutter_weixin/util/EventBusUtils.dart';
 import 'package:flutter_weixin/widgets/app_bar.dart';
 import 'package:simple_animations/simple_animations.dart';
